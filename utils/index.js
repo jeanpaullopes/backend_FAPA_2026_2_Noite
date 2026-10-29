@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from "uuid";
 //import logger from "./logger.js";
 import { version } from "../versao.js";
 
-import { all } from "axios";
 const corsOptions = {
   origin: ["http://localhost:8080", "https://meuservidor.com.br"],
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
