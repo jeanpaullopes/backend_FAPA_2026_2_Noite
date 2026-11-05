@@ -34,10 +34,10 @@ router.get(
   cors(corsOptions),
   APIKeyMiddleware,
   TokenMiddleware,
-  async (token, req, res, next) => {
+  async (tokenPayload, req, res, next) => {
     res.set("Content-Type", "application/json");
-    if (token) {
-      let jwt = await createToken(token);
+    if (tokenPayload) {
+      let jwt = await createToken(tokenPayload);
       res.status(200).send(jwt.jwt);
     } else {
       res.send(500);
