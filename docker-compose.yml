@@ -1,5 +1,4 @@
 services:
-  name: Sistemas_Distribidos
   db:
     image: postgres:16
     container_name: aula_postgres_db

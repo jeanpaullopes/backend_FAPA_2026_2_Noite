@@ -1,0 +1,2 @@
+# Declara o banco usado pelas migrações Prisma deste projeto.
+provider = "postgresql"

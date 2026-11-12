@@ -1,0 +1,75 @@
+// Gera o Prisma Client, a biblioteca usada pela aplicação para consultar o banco.
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Configura o PostgreSQL e lê a URL de conexão de uma variável de ambiente.
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Representa a tabela usuarios; os nomes dos campos são idiomáticos no JavaScript.
+model Usuario {
+  // CHAR(20) corresponde a um identificador textual de tamanho fixo no PostgreSQL.
+  id String @id @db.Char(20)
+
+  // VARCHAR(255) obrigatório; o nome da coluna é "nome" no banco.
+  nome String @db.VarChar(255)
+
+  // O índice UNIQUE do SQL também impede emails repetidos.
+  email String @unique @db.VarChar(255)
+
+  // Armazena o valor informado pelo sistema de autenticação; nunca salve senha em texto puro.
+  senha String @db.VarChar(255)
+
+  // O nome da coluna não muda no banco, embora o modelo continue em singular.
+  username String @unique @db.VarChar(100)
+
+  // Liga o modelo à tabela usuarios, sem exigir renomear a tabela existente.
+  @@map("usuarios")
+}
+
+// Representa a tabela clientes, incluindo os campos opcionais permitidos pelo SQL.
+model Cliente {
+  // VARCHAR(20) obrigatório que identifica cada cliente.
+  id String @id @db.VarChar(20)
+
+  // Campos sem NOT NULL no SQL são opcionais; @map converte camelCase para snake_case.
+  nomeFantasia String? @map("nome_fantasia") @db.VarChar(255)
+  razaoSocial  String? @map("razao_social") @db.VarChar(255)
+
+  // A restrição UNIQUE do banco impede documentos duplicados.
+  cpfCnpj String @unique @map("cpf_cnpj") @db.VarChar(20)
+
+  // String preserva os valores do SQL; o CHECK de domínio é mantido na migração SQL.
+  tipo String @db.VarChar(20)
+
+  // Email não possui NOT NULL no script, portanto pode ser nulo.
+  email String? @db.VarChar(255)
+
+  // Usa o nome plural original da tabela no PostgreSQL.
+  @@map("clientes")
+}
+
+// Representa a tabela produtos e preserva a precisão decimal do preço.
+model Produto {
+  // CHAR(20) corresponde ao tipo de identificador definido no SQL.
+  id String @id @db.Char(20)
+
+  // A descrição é obrigatória e limitada a 255 caracteres.
+  descricao String @db.VarChar(255)
+
+  // O departamento é opcional porque não possui NOT NULL no script.
+  departamento String? @db.VarChar(100)
+
+  // O código de barras é obrigatório e único na tabela.
+  codigoBarras String @unique @map("codigo_barras") @db.VarChar(13)
+
+  // Decimal(10, 2) evita erros de arredondamento típicos de números de ponto flutuante.
+  // O CHECK de preço não negativo é preservado na migração SQL.
+  preco Decimal @db.Decimal(10, 2)
+
+  // Usa o nome plural original da tabela no PostgreSQL.
+  @@map("produtos")
+}
